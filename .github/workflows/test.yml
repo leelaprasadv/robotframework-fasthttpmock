@@ -5,6 +5,9 @@ on:
     paths-ignore:
      - 'README.md'
      - 'CONTRIBUTING.md'
+     - 'docs/**'
+     - '.github/workflows/docs.yml'
+     - '.github/workflows/publish.yml'
     branches:
       - main
   push:
