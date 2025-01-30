@@ -1,6 +1,18 @@
 name: Test
 
-on: [push, pull_request]
+on:
+  pull_request:
+    paths-ignore:
+     - 'README.md'
+     - 'CONTRIBUTING.md'
+    branches:
+      - main
+  push:
+    paths-ignore:
+     - 'README.md'
+     - 'CONTRIBUTING.md'
+    branches:
+      - main
 
 jobs:
   test:
