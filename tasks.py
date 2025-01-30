@@ -6,7 +6,7 @@ from robot.libdoc import libdoc
 # Paths
 ROOT = Path(__file__).parent
 SRC = ROOT / "src" / "FastHTTPMock"
-TESTS = ROOT / "tests"
+UTESTS = ROOT / "tests"
 ATESTS = ROOT / "atests"
 DOCS = ROOT / "docs"
 
@@ -40,33 +40,33 @@ def clean(ctx):
 def format(ctx):
     """Format code using black and ruff."""
     print("Formatting with black...")
-    ctx.run(f"black {SRC} {TESTS}")
+    ctx.run(f"black {SRC} {UTESTS}")
     print("Formatting with ruff...")
-    ctx.run(f"ruff check --fix {SRC} {TESTS}")
+    ctx.run(f"ruff check --fix {SRC} {UTESTS}")
 
 @task
 def lint(ctx):
     """Run linting checks."""
     print("Running black check...")
-    ctx.run(f"black --check {SRC} {TESTS}")
+    ctx.run(f"black --check {SRC} {UTESTS}")
     print("Running ruff check...")
-    ctx.run(f"ruff check {SRC} {TESTS}")
+    ctx.run(f"ruff check {SRC} {UTESTS}")
 
 @task
-def test_unit(ctx):
+def utest(ctx):
     """Run unit tests."""
-    ctx.run(f"pytest {TESTS}")
+    ctx.run(f"pytest {UTESTS}")
 
 @task
-def test_acceptance(ctx):
+def atest(ctx):
     """Run acceptance tests."""
     ctx.run(f"robot {ATESTS}")
 
 @task
 def test(ctx):
     """Run all tests."""
-    test_unit(ctx)
-    test_acceptance(ctx)
+    utest(ctx)
+    atest(ctx)
 
 @task
 def docs(ctx):
@@ -74,9 +74,9 @@ def docs(ctx):
     DOCS.mkdir(exist_ok=True)
     print("Generating library documentation...")
     # ctx.run(f"python -m robot.libdoc FastHTTPMock {DOCS}/FastHTTPMock.html")
-    output = f"{DOCS}/FastHTTPMock.html"
+    output = f"{DOCS}/index.html"
     libdoc("FastHTTPMock", str(output))
-    print(f"Documentation generated at {DOCS}/FastHTTPMock.html")
+    print(f"Documentation generated at {DOCS}/index.html")
 
 @task
 def build(ctx):

@@ -67,8 +67,14 @@ class MockServer:
             logger.debug(f"Getting interaction: {interaction_id}")
             interaction = self.interactions.get(interaction_id)
             if interaction:
-                return interaction.dict()
+                return interaction.model_dump()
             return {"error": "Interaction not found"}
+
+        @self.app.delete("/mock/interactions")
+        async def delete_all_interaction():
+            logger.debug(f"Deleting all interactions. Interactions Count: {len(self.interactions)}")
+            self.interactions = {}
+            return {"interactions_count": len(self.interactions)}
 
         @self.app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
         async def catch_all(request: Request, path: str):

@@ -4,11 +4,12 @@ Library    RequestsLibrary
 Library    Process
 Library    OperatingSystem
 
+Suite Setup    Start Mock Server    port=8085
+Test Teardown    Clear All Mock Interactions
+Suite Teardown   Stop Mock Server
 
 *** Test Cases ***
 Test Basic Mock Server Functionality
-    Start Mock Server    port=8085
-
     ${request}=    Create Dictionary    method=GET    path=/api/users
     ${response}=    Create Dictionary    status=${200}    body={"users": ["user1", "user2"]}
     ${id}=    Add Mock Interaction    ${request}    ${response}
@@ -19,12 +20,9 @@ Test Basic Mock Server Functionality
     Should Be Equal    ${body["users"][0]}    user1
 
     Verify Interaction Called    ${id}    1
-    [Teardown]    Stop Mock Server
 
 
 Mock Simple API Response
-    Start Mock Server    port=8085
-    
     # Define mock interaction
     ${request}=    Create Dictionary   method=GET    path=/api/users
     ${response}=    Create Dictionary  status=${200}    body={"users": ["user1", "user2"]}
@@ -36,12 +34,9 @@ Mock Simple API Response
     
     # Verify the interaction
     Verify Interaction Called    ${id}    1
-    [Teardown]    Stop Mock Server
 
 
 Mock Multiple API Endpoints
-    Start Mock Server    port=8085
-    
     # Mock GET endpoint
     ${get_request}=    Create Dictionary   method=GET    path=/api/users/1
     ${get_response}=    Create Dictionary  status=${200}  body={"id": 1, "name": "John Doe"}
@@ -72,6 +67,3 @@ Mock Multiple API Endpoints
     ${get_resp}=    GET    http://localhost:8085/api/users/1
     Should Be Equal As Strings    ${get_resp.status_code}    200
     Should Be Equal As Strings    ${get_resp.json()}[name]    Yoda
-
-
-    [Teardown]    Stop Mock Server
