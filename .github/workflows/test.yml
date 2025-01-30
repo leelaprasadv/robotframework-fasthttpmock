@@ -24,4 +24,4 @@ jobs:
         pytest tests/
     - name: Run acceptance tests
       run: |
-        robot atest/
+        robot atests/
