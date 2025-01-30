@@ -12,7 +12,7 @@ license = {text = "MIT"}
 license-files = ["LICEN[CS]E*"]
 keywords = ["robotframework", "testing", "mock", "http"]
 authors = [
-    { name = "Leela Prasad V", email = "" },
+    { name = "Leela Prasad V"},
 ]
 dependencies = [
     "robotframework>=7.0",
