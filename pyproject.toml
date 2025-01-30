@@ -8,8 +8,7 @@ version = "0.1.0"
 description = "HTTP mock server library for Robot Framework using FastAPI and Uvicorn"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "MIT"}
-license-files = ["LICEN[CS]E*"]
+license = { file = "LICENSE" }
 keywords = ["robotframework", "testing", "mock", "http"]
 authors = [
     { name = "Leela Prasad V"},
