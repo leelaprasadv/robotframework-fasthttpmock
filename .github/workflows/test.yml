@@ -21,7 +21,7 @@ jobs:
         pip install -e ".[dev]"
     - name: Run unit tests
       run: |
-        invoke test_unit
+        pytest test/
     - name: Run acceptance tests
       run: |
-        invoke test_acceptance
+        robot atest/
