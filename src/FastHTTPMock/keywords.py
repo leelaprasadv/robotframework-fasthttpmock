@@ -1,9 +1,7 @@
 from robot.api.deco import keyword
-
 from .server import MockServer
 from typing import Dict, Any
 import requests
-
 
 
 class FastHTTPMockKeywords:
@@ -103,4 +101,14 @@ class FastHTTPMockKeywords:
         interaction = resp.json()
         actual_calls = interaction.get("call_count", 0)
         assert actual_calls == expected_calls, \
-            f"Expected {expected_calls} calls but got {actual_calls}" 
+            f"Expected {expected_calls} calls but got {actual_calls}"
+
+    @keyword
+    def clear_all_mock_interactions(self):
+        """Clears all mock Interactions.
+
+        Example:
+        | Clear All Mock Interactions |
+        """
+        resp = requests.delete(f"{self.base_url}/mock/interactions")
+        assert resp.status_code == 200, f"Expected 200 calls but got {resp.status_code}"
