@@ -16,23 +16,6 @@ HTTP mock server library for Robot Framework powered by FastAPI. This library en
 pip install robotframework-fasthttpmock
 ```
 
-### Local Development Installation
-
-For local development, you can install the package in editable mode:
-
-```bash
-# Clone the repository
-git clone https://github.com/your-username/robotframework-fasthttpmock.git
-cd robotframework-fasthttpmock
-
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install in editable mode with development dependencies
-pip install -e ".[dev]"
-```
-
 The editable mode (`-e`) allows you to modify the source code and see the changes immediately without reinstalling.
 
 ## Available Keywords
@@ -100,71 +83,9 @@ Mock Multiple API Endpoints
     [Teardown]    Stop Mock Server
 ```
 
-
-## Development Setup
-
-### Prerequisites
-
-- Python 3.8 or higher
-- pip package manager
-
-### Dependencies
-
-#### Core Dependencies
-```text
-robotframework>=7.0
-fastapi>=0.110.0
-uvicorn>=0.27.1
-requests>=2.31.0
-pydantic>=2.6.3
-```
-
-
-#### Development Dependencies
-```text
-pytest>=8.1.1
-pytest-asyncio>=0.23.5
-robotframework-requests==0.9.7
-ruff>=0.9.2
-black>=24.2.0
-```
-
-### Setting Up Development Environment
-
-1. Clone the repository:
-```bash
-git clone https://github.com/your-username/robotframework-fasthttpmock.git
-cd robotframework-fasthttpmock
-```
-
-2. Create and activate virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
-pip install .
-```
-
-4. Run tests:
-```bash
-invoke test
-```
-
-### Run Robot Framework acceptance tests
-```bash
-invoke test-acceptance
-```
-
-### Code Quality
-```bash
-ruff check src/
-black src/
-```
-
 ## Contributing
+
+Refer to [Contributing Docs](./CONTRIBUTING.md) for more details
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
