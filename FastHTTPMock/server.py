@@ -5,10 +5,12 @@ import os
 import threading
 import time
 import uuid
+from typing import Any, Dict, Optional
+
 import requests
 import uvicorn
-from typing import Any, Dict, Optional
 from fastapi import FastAPI, Request, Response
+
 from FastHTTPMock.interaction import Interaction
 
 DEFAULT_HOST = "127.0.0.1"
