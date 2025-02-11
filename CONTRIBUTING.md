@@ -38,10 +38,10 @@ invoke format
 invoke lint
 
 # Run unit tests
-invoke test-unit
+invoke utest
 
 # Run acceptance tests
-invoke test-acceptance
+invoke atest
 
 # Run all tests
 invoke test
