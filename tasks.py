@@ -5,7 +5,7 @@ from robot.libdoc import libdoc
 
 # Paths
 ROOT = Path(__file__).parent
-SRC = ROOT / "src" / "FastHTTPMock"
+SRC = ROOT / "FastHTTPMock"
 UTESTS = ROOT / "tests"
 ATESTS = ROOT / "atests"
 DOCS = ROOT / "docs"

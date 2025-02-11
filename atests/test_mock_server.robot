@@ -18,9 +18,7 @@ Test Basic Mock Server Functionality
     Should Be Equal As Strings    ${resp.status_code}    200
     ${body}=    Set Variable    ${resp.json()}
     Should Be Equal    ${body["users"][0]}    user1
-
     Verify Interaction Called    ${id}    1
-
 
 Mock Simple API Response
     # Define mock interaction

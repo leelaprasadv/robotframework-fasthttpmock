@@ -1,16 +1,17 @@
-from typing import Dict, Any, Optional
-from pydantic import BaseModel
+from typing import Any, Dict, Optional
+
+from pydantic import BaseModel, ConfigDict
+
 
 class Interaction(BaseModel):
     """Model for HTTP mock interactions."""
+
     id: str
     request: Dict[str, Any]
     response: Dict[str, Any]
     call_count: int = 0
     expected_calls: Optional[int] = None
-    
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
     def increment_calls(self):
         """Increment the call count for this interaction."""
@@ -20,4 +21,4 @@ class Interaction(BaseModel):
         """Verify if the interaction was called the expected number of times."""
         if self.expected_calls is None:
             return True
-        return self.call_count == self.expected_calls 
+        return self.call_count == self.expected_calls

@@ -1,14 +1,14 @@
-import uvicorn
-import uuid
-import json
-import threading
 import atexit
-import time
+import json
 import logging
 import os
-
+import threading
+import time
+import uuid
+import requests
+import uvicorn
+from typing import Any, Dict, Optional
 from fastapi import FastAPI, Request, Response
-from typing import Dict, Optional, Any
 from FastHTTPMock.interaction import Interaction
 
 DEFAULT_HOST = "127.0.0.1"
@@ -16,16 +16,20 @@ DEFAULT_PORT = 9334
 
 logger = logging.getLogger(__name__)
 
+
 def setup_debug_logging():
     """Setup debug logging if DEBUG env var is set."""
-    if os.getenv('FASTHTTPMOCK_DEBUG', '').lower() in ('1', 'true', 'yes'):
-        file_handler = logging.FileHandler('FastHTTPMock-debug.log', mode='w')
-        formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(name)s: %(message)s')
+    if os.getenv("FASTHTTPMOCK_DEBUG", "").lower() in ("1", "true", "yes"):
+        file_handler = logging.FileHandler("FastHTTPMock-debug.log", mode="w")
+        formatter = logging.Formatter(
+            "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+        )
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
         logger.setLevel(logging.DEBUG)
         logger.debug("Debug logging enabled for FastHTTPMock")
+
 
 class MockServer:
     def __init__(self):
@@ -36,7 +40,6 @@ class MockServer:
         self.ready = False
         self._setup_routes()
         setup_debug_logging()
-
 
     def _setup_routes(self):
         @self.app.get("/health")
@@ -49,8 +52,7 @@ class MockServer:
             logger.debug(f"Adding new interaction: {interaction}")
             interaction_id = str(uuid.uuid4())
             self.interactions[interaction_id] = Interaction(
-                id=interaction_id,
-                **interaction
+                id=interaction_id, **interaction
             )
             logger.debug(f"Added interaction with ID: {interaction_id}")
             return {"id": interaction_id}
@@ -72,11 +74,15 @@ class MockServer:
 
         @self.app.delete("/mock/interactions")
         async def delete_all_interaction():
-            logger.debug(f"Deleting all interactions. Interactions Count: {len(self.interactions)}")
+            logger.debug(
+                f"Deleting all interactions. Interactions Count: {len(self.interactions)}"
+            )
             self.interactions = {}
             return {"interactions_count": len(self.interactions)}
 
-        @self.app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+        @self.app.api_route(
+            "/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"]
+        )
         async def catch_all(request: Request, path: str):
             logger.debug(f"Received request: {request.method} {request.url.path}")
             logger.debug(f"Request headers: {dict(request.headers)}")
@@ -114,32 +120,40 @@ class MockServer:
         return Response(
             content=json.dumps(response_body),
             status_code=status_code,
-            headers=interaction.response.get("headers", {})
+            headers=interaction.response.get("headers", {}),
         )
 
     async def _get_request_body(self, request: Request) -> Optional[Dict[str, Any]]:
         """Get request body if present."""
         try:
             return await request.json()
-        except:
+        except Exception:
             return None
 
-    async def _matches_request(self, request: Request, interaction: Interaction) -> bool:
+    async def _matches_request(
+        self, request: Request, interaction: Interaction
+    ) -> bool:
         logger.debug(f"Matching request against interaction {interaction.id}")
         if request.method != interaction.request.get("method", "GET"):
-            logger.debug(f"Method mismatch: {request.method} != {interaction.request.get('method')}")
+            logger.debug(
+                f"Method mismatch: {request.method} != {interaction.request.get('method')}"
+            )
             return False
 
         # Match path
         if request.url.path != interaction.request.get("path"):
-            logger.debug(f"Path mismatch: {request.url.path} != {interaction.request.get('path')}")
+            logger.debug(
+                f"Path mismatch: {request.url.path} != {interaction.request.get('path')}"
+            )
             return False
 
         # Match headers if specified
         if "headers" in interaction.request:
             for key, value in interaction.request["headers"].items():
                 if request.headers.get(key) != value:
-                    logger.debug(f"Header mismatch for {key}: {request.headers.get(key)} != {value}")
+                    logger.debug(
+                        f"Header mismatch for {key}: {request.headers.get(key)} != {value}"
+                    )
                     return False
 
         # Match body if specified
@@ -147,9 +161,11 @@ class MockServer:
             try:
                 body = await request.json()
                 if body != interaction.request["body"]:
-                    logger.debug(f"Body mismatch: {body} != {interaction.request['body']}")
+                    logger.debug(
+                        f"Body mismatch: {body} != {interaction.request['body']}"
+                    )
                     return False
-            except:
+            except Exception:
                 logger.debug("Failed to parse request body as JSON")
                 return False
 
@@ -163,36 +179,37 @@ class MockServer:
             host=host,
             port=port,
             access_log=False,  # Disable access logs for better performance
-            log_config=None
+            log_config=None,
         )
         logger.debug(f"Starting mock server on {host}:{port}")
         self.server = uvicorn.Server(config)
-        
+
         def run_server():
             self.server.run()
-            
+
         self.thread = threading.Thread(target=run_server, daemon=True)
         self.thread.start()
-        
+
         # Wait for server to be ready
         max_retries = 10
         retry_interval = 0.1
         for attempt in range(max_retries):
-            logger.debug(f"Checking server health (attempt {attempt + 1}/{max_retries})")
+            logger.debug(
+                f"Checking server health (attempt {attempt + 1}/{max_retries})"
+            )
             try:
-                import requests
                 requests.get(f"http://{host}:{port}/health")
                 self.ready = True
                 logger.debug("Server is ready")
                 break
-            except:
+            except Exception:
                 logger.debug("Server not ready yet, retrying...")
                 time.sleep(retry_interval)
-        
+
         if not self.ready:
             logger.error("Failed to start mock server")
             raise RuntimeError("Failed to start mock server")
-        
+
         # Register shutdown handler
         atexit.register(self.stop)
 

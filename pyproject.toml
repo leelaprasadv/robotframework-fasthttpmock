@@ -2,9 +2,12 @@
 requires = ["setuptools>=64.0.0", "wheel", "build"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages]
+find = {}
+
 [project]
 name = "robotframework-fasthttpmock"
-version = "0.1.1"
+version = "0.2.0"
 description = "HTTP mock server library for Robot Framework using FastAPI and Uvicorn"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -48,10 +51,10 @@ select = ["E", "F", "B", "I"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=src/FastHTTPMock --cov-report=term-missing"
+addopts = "-v --cov=FastHTTPMock --cov-report=term-missing"
 
 [tool.coverage.run]
-source = ["src/FastHTTPMock"]
+source = ["FastHTTPMock"]
 branch = true
 
 [tool.coverage.report]
